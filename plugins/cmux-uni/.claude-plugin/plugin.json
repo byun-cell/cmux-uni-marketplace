@@ -1,0 +1,18 @@
+{
+  "name": "cmux-uni",
+  "version": "1.0.0",
+  "description": "Claude Code multi-agent orchestrator — Gemini CLI (research) + GitHub Copilot CLI (code) via cmux terminal multiplexer",
+  "author": {
+    "name": "UNI Customs Broker",
+    "email": "dev@unicustoms.com"
+  },
+  "repository": "https://github.com/eximtech/cmux-uni-marketplace",
+  "license": "MIT",
+  "keywords": [
+    "multi-agent",
+    "orchestration",
+    "cmux",
+    "gemini",
+    "copilot"
+  ]
+}

@@ -1,0 +1,34 @@
+{
+  "version": "1.0.0",
+  "description": "cmux-uni: Claude Code orchestrator + Gemini/Copilot sub-agent configuration",
+  "orchestrator": {
+    "name": "Claude Code",
+    "role": "Planning, verification, decision-making, orchestration"
+  },
+  "agents": {
+    "gemini": {
+      "name": "Gemini CLI",
+      "role": "Research, analysis, idea exploration, alternative review",
+      "non_interactive": "gemini -p \"{prompt}\" --yolo",
+      "interactive": "gemini",
+      "strengths": ["web research", "analysis", "summarization", "translation", "idea generation"]
+    },
+    "copilot": {
+      "name": "GitHub Copilot CLI",
+      "role": "Code implementation, refactoring, code review, GitHub integration",
+      "non_interactive": "gh copilot -- -p \"{prompt}\" --yolo",
+      "interactive": "gh copilot",
+      "strengths": ["code generation", "bug fixing", "refactoring", "test writing", "PR creation"]
+    }
+  },
+  "runtime": {
+    "state_dir": "~/.cmux-uni",
+    "state_file": "~/.cmux-uni/state.json",
+    "results_dir": "~/.cmux-uni/results"
+  },
+  "roles": {
+    "claude": ["planning", "verification", "decision-making", "approval", "orchestration", "documentation"],
+    "gemini": ["research", "data analysis", "competitor analysis", "trend analysis", "draft writing"],
+    "copilot": ["code implementation", "code review", "refactoring", "testing", "GitHub operations"]
+  }
+}
