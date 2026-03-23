@@ -1,7 +1,7 @@
 {
   "name": "cmux-uni",
-  "version": "1.0.0",
-  "description": "Claude Code multi-agent orchestrator — Gemini CLI (research) + GitHub Copilot CLI (code) via cmux terminal multiplexer",
+  "version": "1.1.0",
+  "description": "Claude Code multi-agent orchestrator — Gemini CLI (research) + GitHub Copilot CLI (code) + Perplexity Pro (deep research) via cmux",
   "author": {
     "name": "UNI Customs Broker",
     "email": "dev@unicustoms.com"
@@ -13,6 +13,8 @@
     "orchestration",
     "cmux",
     "gemini",
-    "copilot"
+    "copilot",
+    "perplexity",
+    "deep-research"
   ]
 }

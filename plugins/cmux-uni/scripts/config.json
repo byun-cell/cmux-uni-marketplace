@@ -19,16 +19,26 @@
       "non_interactive": "gh copilot -- -p \"{prompt}\" --yolo",
       "interactive": "gh copilot",
       "strengths": ["code generation", "bug fixing", "refactoring", "test writing", "PR creation"]
+    },
+    "perplexity": {
+      "name": "Perplexity Pro",
+      "role": "Deep research with real-time web sources, academic papers, citation-backed analysis",
+      "mode": "semi-automated",
+      "workflow": "prompt-generate → user-execute → result-upload",
+      "results_dir": "~/.cmux-uni/perplexity",
+      "strengths": ["real-time web search", "source-cited research", "academic papers", "market data", "regulatory updates"]
     }
   },
   "runtime": {
     "state_dir": "~/.cmux-uni",
     "state_file": "~/.cmux-uni/state.json",
-    "results_dir": "~/.cmux-uni/results"
+    "results_dir": "~/.cmux-uni/results",
+    "perplexity_dir": "~/.cmux-uni/perplexity"
   },
   "roles": {
     "claude": ["planning", "verification", "decision-making", "approval", "orchestration", "documentation"],
     "gemini": ["research", "data analysis", "competitor analysis", "trend analysis", "draft writing"],
-    "copilot": ["code implementation", "code review", "refactoring", "testing", "GitHub operations"]
+    "copilot": ["code implementation", "code review", "refactoring", "testing", "GitHub operations"],
+    "perplexity": ["deep research", "source-cited analysis", "regulatory lookup", "market intelligence", "academic search"]
   }
 }

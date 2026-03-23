@@ -24,8 +24,9 @@ fi
 # 런타임 디렉토리 (사용자별, 플러그인 밖)
 RUNTIME_DIR="$HOME/.cmux-uni"
 RESULTS_DIR="$RUNTIME_DIR/results"
+PERPLEXITY_DIR="$RUNTIME_DIR/perplexity"
 STATE_FILE="$RUNTIME_DIR/state.json"
-mkdir -p "$RESULTS_DIR"
+mkdir -p "$RESULTS_DIR" "$PERPLEXITY_DIR"
 
 # ── 색상 출력 ───────────────────────────────────────────────
 RED='\033[0;31m'; GREEN='\033[0;32m'; YELLOW='\033[1;33m'
@@ -309,16 +310,66 @@ capture_agent() {
   esac
 }
 
+# ── Perplexity 결과 폴더 준비 ────────────────────────────────
+pplx_init() {
+  local TASK_ID="pplx_$(date +%s)"
+  local OUT_FILE="$PERPLEXITY_DIR/${TASK_ID}.md"
+  mkdir -p "$PERPLEXITY_DIR"
+  success "Perplexity 결과 폴더 준비 완료"
+  echo "  📂 저장 경로: $PERPLEXITY_DIR/"
+  echo "  📝 결과 파일: $OUT_FILE"
+  echo "$TASK_ID"
+}
+
+# ── Perplexity 결과 목록 ────────────────────────────────────
+pplx_list() {
+  if ls "$PERPLEXITY_DIR"/*.md 1>/dev/null 2>&1; then
+    log "Perplexity 결과 목록:"
+    ls -lt "$PERPLEXITY_DIR"/*.md | head -20
+  else
+    warn "Perplexity 결과 파일 없음: $PERPLEXITY_DIR/"
+  fi
+}
+
+# ── Perplexity 최신 결과 읽기 ────────────────────────────────
+pplx_latest() {
+  local LATEST
+  LATEST=$(ls -t "$PERPLEXITY_DIR"/*.md 2>/dev/null | head -1)
+  if [ -n "$LATEST" ]; then
+    success "최신 결과: $LATEST"
+    cat "$LATEST"
+  else
+    warn "결과 파일 없음: $PERPLEXITY_DIR/"
+  fi
+}
+
+# ── Perplexity 전체 결과 읽기 ────────────────────────────────
+pplx_all() {
+  if ls "$PERPLEXITY_DIR"/*.md 1>/dev/null 2>&1; then
+    for f in "$PERPLEXITY_DIR"/*.md; do
+      log "═══ $(basename "$f") ═══════════════════"
+      cat "$f"
+      echo ""
+    done
+  else
+    warn "결과 파일 없음: $PERPLEXITY_DIR/"
+  fi
+}
+
 # ── 메인 디스패처 ───────────────────────────────────────────
 case "${1:-help}" in
-  start)      start_agents ;;
-  status)     check_agents ;;
-  gemini)     delegate_gemini "$2" "$3" ;;
-  copilot)    delegate_copilot "$2" "$3" ;;
-  parallel)   parallel_delegate "$2" "$3" ;;
-  capture)    capture_agent "$2" "$3" ;;
-  research)   browser_research_to_gemini "$2" "$3" ;;
-  wait)       wait_for_result "$2" "$3" "$4" "$5" ;;
+  start)        start_agents ;;
+  status)       check_agents ;;
+  gemini)       delegate_gemini "$2" "$3" ;;
+  copilot)      delegate_copilot "$2" "$3" ;;
+  parallel)     parallel_delegate "$2" "$3" ;;
+  capture)      capture_agent "$2" "$3" ;;
+  research)     browser_research_to_gemini "$2" "$3" ;;
+  wait)         wait_for_result "$2" "$3" "$4" "$5" ;;
+  pplx-init)    pplx_init ;;
+  pplx-list)    pplx_list ;;
+  pplx-latest)  pplx_latest ;;
+  pplx-all)     pplx_all ;;
   help|*)
     echo ""
     echo "cmux-uni helper.sh - Claude Code 멀티에이전트 헬퍼"
@@ -331,6 +382,10 @@ case "${1:-help}" in
     echo "  ./helper.sh parallel \"g프롬프트\" \"c프롬프트\"  # 병렬 위임"
     echo "  ./helper.sh capture [gemini|copilot] [lines]  # 화면 캡처"
     echo "  ./helper.sh research \"URL\" \"질문\"             # 브라우저 리서치"
+    echo "  ./helper.sh pplx-init                          # Perplexity 결과 폴더 준비"
+    echo "  ./helper.sh pplx-list                          # Perplexity 결과 목록"
+    echo "  ./helper.sh pplx-latest                        # 최신 Perplexity 결과 읽기"
+    echo "  ./helper.sh pplx-all                           # 전체 Perplexity 결과 읽기"
     echo ""
     ;;
 esac

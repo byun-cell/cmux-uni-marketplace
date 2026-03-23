@@ -6,8 +6,17 @@ description: cmux 워크스페이스의 모든 에이전트(Gemini, Copilot, Bro
 
 state.json에서 surface ID를 읽어 각 에이전트의 현재 상태를 확인합니다.
 
+## Automated Agents (Gemini + Copilot)
+
 ```bash
 bash ${CLAUDE_PLUGIN_ROOT}/scripts/helper.sh status
 ```
 
+## Semi-Automated Agent (Perplexity)
+
+```bash
+bash ${CLAUDE_PLUGIN_ROOT}/scripts/helper.sh pplx-list
+```
+
 결과를 확인하고 사용자에게 각 에이전트의 상태를 보고합니다.
+Perplexity는 결과 폴더의 파일 수와 최신 파일 날짜로 상태를 표시합니다.
