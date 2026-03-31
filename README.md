@@ -1,6 +1,8 @@
-# cmux-uni — Claude Code Multi-Agent Orchestrator
+# cmux-uni v1.1.0 — Claude Code Multi-Agent Orchestrator
 
 Claude Code를 오케스트레이터로 사용하여 **Gemini CLI**(리서치), **GitHub Copilot CLI**(코드), **Perplexity Pro**(심층 검색)를 서브에이전트로 조율하는 멀티에이전트 플러그인입니다.
+
+> 8개 커맨드 + 1개 에이전트 + 1개 스킬 제공
 
 ## Prerequisites
 
@@ -79,6 +81,33 @@ Claude Code (Orchestrator)
 | `~/.cmux-uni/state.json` | Agent surface ID 상태 |
 | `~/.cmux-uni/results/` | Gemini/Copilot 실행 결과 |
 | `~/.cmux-uni/perplexity/` | Perplexity 결과 파일 |
+
+## 작업 위임 원칙
+
+| 작업 유형 | 에이전트 | 예시 |
+|-----------|---------|------|
+| 리서치·분석·번역·아이디어 | Gemini | 시장 조사, 기술 비교 |
+| 코드 생성·리뷰·버그수정 | Copilot | 컴포넌트 구현, 리팩토링 |
+| 심층 검색·출처 포함 조사 | Perplexity | 최신 동향, 논문, 통계 |
+| 기획 검증·의사결정·최종 승인 | Claude (직접) | 아키텍처 결정 |
+
+## 에이전트·스킬 구성
+
+| 구성요소 | 이름 | 모델 | 역할 |
+|---------|------|------|------|
+| Agent | perplexity-orchestrator | sonnet | Perplexity 프롬프트 최적화·결과 분석 |
+| Skill | perplexity-research | — | 심층 검색 워크플로우 |
+
+## 버전 히스토리
+
+### v1.1.0 (2026-03-23)
+- Perplexity Pro 반자동 리서치 에이전트 추가
+- `/perplexity` 커맨드 + perplexity-orchestrator 에이전트
+- 결과 파일 관리 (`~/.cmux-uni/perplexity/`)
+
+### v1.0.0 (2026-03-20)
+- 최초 릴리즈: Gemini + Copilot 자동 위임
+- cmux 탭 자동 생성, 병렬 실행, 결과 수집
 
 ## License
 
