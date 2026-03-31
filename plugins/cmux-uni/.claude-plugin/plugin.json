@@ -6,7 +6,7 @@
     "name": "UNI Customs Broker",
     "email": "dev@unicustoms.com"
   },
-  "repository": "https://github.com/eximtech/cmux-uni-marketplace",
+  "repository": "https://github.com/byun-cell/cmux-uni-marketplace",
   "license": "MIT",
   "keywords": [
     "multi-agent",

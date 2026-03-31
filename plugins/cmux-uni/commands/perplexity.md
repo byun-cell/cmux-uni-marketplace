@@ -47,7 +47,7 @@ mkdir -p "$PPLX_DIR"
 {최적화된 프롬프트}
 
 ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
-📂 결과 저장 경로: ~/.cmux-uni/perplexity/{task_id}.md
+📂 결과 저장 경로: ~/.claude/cmux-uni/perplexity/{task_id}.md
 💡 Perplexity 결과를 위 파일에 저장하거나,
    이 대화에 직접 붙여넣기 해주세요.
 ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
@@ -57,7 +57,7 @@ mkdir -p "$PPLX_DIR"
 
 인자가 "result"인 경우:
 
-1. `~/.cmux-uni/perplexity/` 폴더의 .md 파일 목록을 확인합니다:
+1. `~/.claude/cmux-uni/perplexity/` 폴더의 .md 파일 목록을 확인합니다:
 
 ```bash
 ls -lt "$HOME/.cmux-uni/perplexity/"*.md 2>/dev/null | head -10

@@ -9,20 +9,27 @@
 SCRIPT_DIR="$(cd "$(dirname "${BASH_SOURCE[0]}")" && pwd)"
 PLUGIN_ROOT="$(dirname "$SCRIPT_DIR")"
 
-# cmux 바이너리 탐색
-if command -v cmux &>/dev/null; then
-  CMUX="cmux"
-elif [ -x "/Applications/cmux.app/Contents/Resources/bin/cmux" ]; then
-  CMUX="/Applications/cmux.app/Contents/Resources/bin/cmux"
-elif [ -x "$HOME/.local/bin/cmux" ]; then
-  CMUX="$HOME/.local/bin/cmux"
-else
-  echo "[✗] cmux를 찾을 수 없습니다. cmux를 먼저 설치하세요."
-  exit 1
+# config.json 기반 설정 로드 + command -v fallback
+CONFIG_FILE="$HOME/.claude/cmux-uni/config.json"
+if [ -f "$CONFIG_FILE" ]; then
+  CMUX=$(python3 -c "import json; print(json.load(open('$CONFIG_FILE')).get('cmux',{}).get('bin',''))" 2>/dev/null)
+  [ -z "$CMUX" ] && CMUX=""
+fi
+if [ -z "$CMUX" ]; then
+  if command -v cmux &>/dev/null; then
+    CMUX="cmux"
+  elif [ -x "/Applications/cmux.app/Contents/Resources/bin/cmux" ]; then
+    CMUX="/Applications/cmux.app/Contents/Resources/bin/cmux"
+  elif [ -x "$HOME/.local/bin/cmux" ]; then
+    CMUX="$HOME/.local/bin/cmux"
+  else
+    echo "[✗] cmux를 찾을 수 없습니다. cmux를 먼저 설치하세요."
+    exit 1
+  fi
 fi
 
-# 런타임 디렉토리 (사용자별, 플러그인 밖)
-RUNTIME_DIR="$HOME/.cmux-uni"
+# 런타임 디렉토리 (로컬과 통일: ~/.claude/cmux-uni/)
+RUNTIME_DIR="$HOME/.claude/cmux-uni"
 RESULTS_DIR="$RUNTIME_DIR/results"
 PERPLEXITY_DIR="$RUNTIME_DIR/perplexity"
 STATE_FILE="$RUNTIME_DIR/state.json"
@@ -170,7 +177,7 @@ delegate_gemini() {
   log "프롬프트: ${PROMPT:0:80}..."
 
   $CMUX send --workspace "$AGENT_WORKSPACE" --surface "$GEMINI_SURFACE" \
-    "gemini -p \"$PROMPT\" --yolo 2>&1 | tee $OUT_FILE && echo '[DONE:$TASK_ID]'"
+    "gemini -p \"$PROMPT\" --yolo 2>&1 | tee $OUT_FILE && echo \"[DONE:$TASK_ID]\""
   $CMUX send-key --workspace "$AGENT_WORKSPACE" --surface "$GEMINI_SURFACE" Return
 
   echo "$OUT_FILE"
@@ -187,7 +194,7 @@ delegate_copilot() {
   log "프롬프트: ${PROMPT:0:80}..."
 
   $CMUX send --workspace "$AGENT_WORKSPACE" --surface "$COPILOT_SURFACE" \
-    "gh copilot -- -p \"$PROMPT\" --yolo 2>&1 | tee $OUT_FILE && echo '[DONE:$TASK_ID]'"
+    "gh copilot -- -p \"$PROMPT\" --yolo 2>&1 | tee $OUT_FILE && echo \"[DONE:$TASK_ID]\""
   $CMUX send-key --workspace "$AGENT_WORKSPACE" --surface "$COPILOT_SURFACE" Return
 
   echo "$OUT_FILE"
@@ -217,6 +224,17 @@ wait_for_result() {
   done
 
   echo ""
+
+  # 타임아웃 시 capture-pane으로 강제 수집 (fallback)
+  if [ $ELAPSED -ge $TIMEOUT ]; then
+    warn "타임아웃 (${TIMEOUT}초) — capture-pane 강제 수집"
+    local CAPTURED
+    CAPTURED=$($CMUX capture-pane --workspace "$AGENT_WORKSPACE" --surface "$SURFACE" --lines 50 2>&1)
+    if [ ! -f "$OUT_FILE" ] || [ ! -s "$OUT_FILE" ]; then
+      echo "$CAPTURED" > "$OUT_FILE"
+      warn "캡처 결과를 $OUT_FILE 에 저장"
+    fi
+  fi
 
   if [ -f "$OUT_FILE" ]; then
     cat "$OUT_FILE"
